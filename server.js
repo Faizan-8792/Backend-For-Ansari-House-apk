@@ -28,6 +28,21 @@ const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 let mongoClient = null;
 let scoresCollection = null;
 
+app.get("/", (_req, res) => {
+  const dbReady = Boolean(scoresCollection);
+  return res.json({
+    ok: true,
+    service: "ansari-runners-backend",
+    message: "Backend is live.",
+    dbReady,
+    endpoints: {
+      health: "GET /health",
+      saveScore: "POST /api/scores",
+      leaderboard: "GET /api/leaderboard?limit=50",
+    },
+  });
+});
+
 async function initDatabase() {
   mongoClient = new MongoClient(MONGODB_URI, {
     maxPoolSize: 10,
